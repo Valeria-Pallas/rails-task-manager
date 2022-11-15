@@ -4,18 +4,24 @@ class TasksController < ApplicationController
   # Task.valid?
 
   # Task.create!()
-
-  def show
-    @tasks = Task.find(params[:id])
-  end
-
   def index
     @tasks = Task.all
+  end
 
+  def show
+    @task = Task.find(params[:id])
   end
 
   def new
     @task = Task.new
+    # Needed to instantiate the form_with
+  end
+
+  def create
+    @task = Task.new(task_params)
+    @task.save
+    redirect_to task_path(@task)
+    # tasks_path
   end
 
   def edit
@@ -24,30 +30,22 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
   end
 
-  def create
-    @task = Task.new(task_params)
-    @task.save
-    redirect_to tasks_path
-  end
-
   def update
     @task = Task.find(params[:id])
     @task.update(taskt_params)
-    Redirect_to tasks_path(@task)
+    redirect_to task_path(@task)
   end
 
   def destroy
-  # task_destroy_path(@task), data: {turbo_method: 'Delete', turbo_confirm: 'are you sure?'}
-  @task = Task.find(params[:id])
-  @task.destroy
+    # task_destroy_path(@task), data: {turbo_method: 'Delete', turbo_confirm: 'are you sure?'}
+    @task = Task.find(params[:id])
+    @task.destroy
 
-  Redirect_to tasks_path(@task), status: :see_other
+    redirect_to tasks_path(@task), status: :see_other
   end
-
 end
 
-
-  private
+private
 
   def task_params
     params.require(:task).permit(:title, :details, :completed)
